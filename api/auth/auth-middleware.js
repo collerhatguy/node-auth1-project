@@ -1,14 +1,19 @@
 const { findBy } = require("../users/users-model")
 
 function restricted(req, res, next) {
-  if (!req.session) next({ status: 401, message: "You shall not pass!" })
-  next()
+  if (req.session) {
+    next()
+  } else {
+    next({ status: 401, message: "You shall not pass!" })
+  }
 }
 
 function checkUsernameFree(req, res, next) {
   const { username } = req.body
   findBy({ username }).then(accounts => {
-    !accounts.length ? next({ status: 422, message: "Username taken" }) : next()
+    accounts.length 
+      ? next({ status: 422, message: "Username taken" }) 
+      : next()
   })
 }
 
@@ -30,7 +35,6 @@ function checkPasswordLength(req, res, next) {
   next()
 }
 
-// Don't forget to add these to the `exports` object so they can be required in other modules
 module.exports = {
   restricted, 
   checkPasswordLength, 

@@ -32,9 +32,11 @@ router.post("/login", checkUsernameExists, checkPasswordLength, (req, res, next)
   const account = possibleAccounts.find(a => 
     bcrypt.compareSync(body.password, a.password)
   )
-  account 
-    ? res.status(200).json({ message:"Welcome sue!" })
-    : next({ status: 401, message: "Invalid credentials" })
+  if (account) {
+    res.cookie("chocolatechip", { name: "chocolatechip", value: account.user_id })
+    res.status(200).json({ message: `Welcome ${account.username}!` })
+  } 
+  next({ status: 401, message: "Invalid credentials" })
 })
 
 /**
@@ -54,9 +56,14 @@ router.post("/login", checkUsernameExists, checkPasswordLength, (req, res, next)
 */
 
 server.get("/logout", (req, res) => {
-  req.session 
-    ? res.status(200).json({ message: "logged out" })
-    : res.status(200).json({ message: "no session" })
+  if (req.session) {
+    req.session.destroy(err => {
+      err
+        ? res.status(200).json({ message: "error logged out" })
+        : res.status(200).json({ message: "logged out" })
+    })
+  }
+  res.send( "no session" )
 })
 
 module.exports = router
