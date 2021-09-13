@@ -1,5 +1,3 @@
-// Require `checkUsernameFree`, `checkUsernameExists` and `checkPasswordLength`
-// middleware functions from `auth-middleware.js`. You will need them here!
 const { checkUsernameFree, checkUsernameExists, checkPasswordLength } = require("./auth-middleware")
 const { add } = require("../users/users-model")
 const bcrypt = require("bcryptjs")
@@ -61,5 +59,4 @@ server.get("/logout", (req, res) => {
     : res.status(200).json({ message: "no session" })
 })
 
-module.exports = server
-// Don't forget to add the router to the `exports` object so it can be required in other modules
+module.exports = router

@@ -1,6 +1,6 @@
-const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
+const express = require("express")
+const helmet = require("helmet")
+const cors = require("cors")
 const session = require("express-session")
 
 /**
@@ -16,13 +16,13 @@ const session = require("express-session")
   or you can use a session store like `connect-session-knex`.
 */
 
-const server = express();
-const userEndpoints = require("./users/users-router")
-const authEndpoints = require("./auth/auth-router")
+const server = express()
+const userRouter = require("./users/users-router")
+const authRouter = require("./auth/auth-router")
 
-server.use(helmet());
-server.use(express.json());
-server.use(cors());
+server.use(helmet())
+server.use(express.json())
+server.use(cors())
 server.use(session({
   name: 'notsession',
   secret: 'nobody tosses a dwarf!',
@@ -35,14 +35,14 @@ server.use(session({
   saveUninitialized: false,
 }))
 
-server.use("/api/users", userEndpoints)
-server.use("/api/auth", authEndpoints)
+server.use("/api/users", userRouter)
+server.use("/api/auth", authRouter)
 
 server.use((err, req, res, next) => { // eslint-disable-line
   res.status(err.status || 500).json({
     message: err.message,
     stack: err.stack,
-  });
-});
+  })
+})
 
-module.exports = server;
+module.exports = server
