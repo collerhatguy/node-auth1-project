@@ -33,7 +33,7 @@ router.post("/login", checkUsernameExists, checkPasswordLength, (req, res, next)
     bcrypt.compareSync(body.password, a.password)
   )
   if (account) {
-    res.cookie("chocolatechip", { name: "chocolatechip", value: account.user_id })
+    req.session.user = account
     res.status(200).json({ message: `Welcome ${account.username}!` })
   } 
   next({ status: 401, message: "Invalid credentials" })
@@ -56,7 +56,7 @@ router.post("/login", checkUsernameExists, checkPasswordLength, (req, res, next)
 */
 
 server.get("/logout", (req, res) => {
-  if (req.session) {
+  if (req.session.user) {
     req.session.destroy(err => {
       err
         ? res.status(200).json({ message: "error logged out" })
